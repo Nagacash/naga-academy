@@ -16,21 +16,29 @@ export default clerkMiddleware(async (auth, req) => {
     try {
       // First ensure user is authenticated (Clerk handles redirect automatically)
       const { userId } = await auth.protect();
-      
+
       if (!userId) {
         // Not authenticated, Clerk will handle redirect
         return;
       }
-      
+
       // Then check if user is admin
       const admin = await isAdmin();
-      
+
+      // Debug logging
+      console.log("[Middleware] Admin route access check:", {
+        path: req.url,
+        userId,
+        isAdmin: admin,
+      });
+
       if (!admin) {
+        console.log("[Middleware] User is not admin, redirecting to home");
         // Redirect to home if not admin
         return NextResponse.redirect(new URL("/", req.url));
       }
-      
-      // User is admin, allow access
+
+      console.log("[Middleware] User is admin, allowing access");
     } catch (error) {
       // If there's an error checking admin status, redirect to home for security
       console.error("[Middleware] Error checking admin access:", error);
@@ -47,3 +55,4 @@ export const config = {
     "/(api|trpc)(.*)",
   ],
 };
+
