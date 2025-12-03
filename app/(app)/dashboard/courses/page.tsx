@@ -25,7 +25,7 @@ export default async function MyCoursesPage() {
     completedLessons: number;
   };
 
-  const startedCourses = courses.reduce<CourseWithProgress[]>((acc, course) => {
+  const startedCourses: CourseWithProgress[] = courses.reduce((acc, course) => {
     const { total, completed } = (course.modules ?? []).reduce(
       (stats, m) =>
         (m.lessons ?? []).reduce(
